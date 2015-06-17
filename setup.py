@@ -3,12 +3,10 @@
 from distutils.core import setup
 
 setup(
-    name='cli',
+    name='clif',
     version='0.0.1',
     author='François Ménabé',
     author_email='francois.menabe@gmail.com',
-    #url='',
-    #download_url='',
     license='MIT License',
     description='Framework for generating command-line',
     long_description=open('README.rst').read(),
@@ -24,4 +22,4 @@ setup(
         'Programming Language :: Python :: 3',
         'Topic :: Utilities'
     ],
-    packages=['cli'])
+    packages=['clif'])

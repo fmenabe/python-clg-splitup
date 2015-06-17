@@ -1,4 +1,4 @@
-Command-line framework in Python
+Command-line interface framework
 ================================
 
 This is small framework for generating command-line in python. Each command has
