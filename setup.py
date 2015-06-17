@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(
     name='clif',
-    version='0.1.0',
+    version='0.2.0',
     author='François Ménabé',
     author_email='francois.menabe@gmail.com',
     license='MIT License',
@@ -22,4 +22,5 @@ setup(
         'Programming Language :: Python :: 3',
         'Topic :: Utilities'
     ],
-    packages=['clif'])
+    packages=['clif'],
+    install_requires=['clg', 'pyyaml', 'yamlordereddictloader'])
