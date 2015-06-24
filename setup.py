@@ -7,6 +7,8 @@ setup(
     version='0.2.0',
     author='François Ménabé',
     author_email='francois.menabe@gmail.com',
+    url = 'http://github.com/fmenabe/python-clif',
+    download_url = 'http://github.com/fmenabe/python-clif',
     license='MIT License',
     description='Framework for generating command-line',
     long_description=open('README.rst').read(),
