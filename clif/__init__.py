@@ -79,13 +79,13 @@ def _load_file(path):
             except KeyError:
                 raise CliError("(%s) invalid anchor '%s'" % (path, conf))
         elif isinstance(conf, dict):
-            for key, value in conf.items():
-                if key == '<<<':
-                    conf.pop('<<<')
-                    conf.update(load_conf(value))
+            new_conf = OrderedDict()
+            for param, value in conf.items():
+                if param == '<<<':
+                    new_conf.update(load_conf(value))
                 else:
-                    conf[key] = load_conf(value)
-            return conf
+                    new_conf[param] = load_conf(value)
+            return new_conf
         elif isinstance(conf, (list, tuple)):
             return [load_conf(elt) for elt in conf]
         else:
