@@ -82,6 +82,8 @@ def _load_file(path):
             new_conf = OrderedDict()
             for param, value in conf.items():
                 if param == '<<<':
+                    if not value.startswith('_') or not value.endswith('_'):
+                        raise CliError("%s: invalid anchor '%s'" % (path, value))
                     new_conf.update(load_conf(value))
                 else:
                     new_conf[param] = load_conf(value)
