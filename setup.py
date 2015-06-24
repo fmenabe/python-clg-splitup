@@ -14,7 +14,7 @@ setup(
     long_description=open('README.rst').read(),
     keywords=['command-line', 'argparse', 'wrapper', 'clg', 'framework'],
     classifiers=[
-        'Development Status :: 1 - Planning',
+        'Development Status :: 3 - Alpha',
         'Environment :: Console',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
