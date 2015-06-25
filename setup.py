@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(
     name='clif',
-    version='0.2.0',
+    version='0.2.1',
     author='François Ménabé',
     author_email='francois.menabe@gmail.com',
     url = 'http://github.com/fmenabe/python-clif',
