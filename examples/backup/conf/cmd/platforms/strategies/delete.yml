@@ -1,0 +1,16 @@
+help: Delete a strategy.
+description: Delete a strategy.
+add_help: False
+execute:
+    module: commands.platforms.strategies.delete
+groups:
+    - _MAIN_
+
+    - <<<: _ARGS_
+      args:
+        platform:
+            match: '^[^:]*:[^:]*'
+            help: Platform.
+
+        name:
+            help: Name.

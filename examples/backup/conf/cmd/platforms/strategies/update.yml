@@ -1,0 +1,66 @@
+help: Update a strategy.
+description: Update a strategy.
+add_help: False
+execute:
+    module: commands.platforms.strategies.update
+groups:
+    - _MAIN_
+
+    - title: Attributs options
+      options:
+        full_pools:
+            nargs: '+'
+            metavar: POOL
+            help: Media pool for totals.
+
+        incr_pools:
+            nargs: '+'
+            metavar: POOL
+            help: Media pool for incrementals.
+
+        nfs:
+            action: store_true
+            help: NFS.
+        fulls_schedule:
+            help: Schedule for the fulls.
+
+        incrs_schedule:
+            help: Schedule for the incrementals.
+
+        pre_processing:
+            help: Pre-processing script.
+
+        post_processing:
+            help: Post_processing script.
+
+        type:
+            choices: [Backup, SnapShot, Replication]
+            default: Backup
+            metavar: TYPE
+            help: 'Type (choices: __CHOICES__; default: __DEFAULT__).'
+
+      exclusive_groups:
+        - options:
+            enable_fulls:
+                action: store_true
+                help: Enable fulls.
+            disable_fulls:
+                action: store_true
+                help: Disable fulls.
+
+        - options:
+            enable_incrs:
+                action: store_true
+                help: Enable incrementals.
+            disable_incrs:
+                action: store_true
+                help: Disable incrementals.
+
+    - <<<: _ARGS_
+      args:
+        platform:
+            match: '^[^:]*:[^:]*'
+            help: Platform.
+
+        name:
+            help: Name.

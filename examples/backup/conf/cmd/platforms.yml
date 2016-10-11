@@ -1,0 +1,6 @@
+help: Commands for managing platforms.
+description: Commands for managing platforms.
+add_help: false
+print_help: true
+groups:
+    - <<<: _SUB_

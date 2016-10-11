@@ -1,0 +1,6 @@
+help: Commands for managing strategies.
+description: Commands for managing strategies.
+add_help: false
+print_help: true
+groups:
+    - <<<: _SUB_

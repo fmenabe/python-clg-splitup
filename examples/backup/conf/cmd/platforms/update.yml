@@ -1,0 +1,64 @@
+help: Update a host.
+description: Update a host.
+add_help: false
+execute:
+    module: commands.platforms.update
+groups:
+    - _MAIN_
+
+    - title: Common options
+      options:
+        name:
+            help: Name
+        type:
+            help: Type.
+        comment:
+            help: Comment.
+        hostgroup:
+            help: Move to hostgroup of the given host/app.
+            match: '^(host|app):[^:]*$'
+
+      exclusive_groups:
+        - options:
+            enable:
+                action: store_true
+                help: Enable the host.
+            disable:
+                action: store_true
+                help: Disable the host.
+
+    - title: Host options
+      options:
+        protocol:
+            choices: ['TiNa', 'NDMP']
+            default: TiNa
+            help: 'Protocol (choices: __CHOICES__; default __DEFAULT__).'
+
+        ndmp_user:
+            help: NDMP user.
+
+        ndmp_password:
+            help: NDMP password.
+
+      exclusive_groups:
+        - options:
+            enable_report:
+                action: store_true
+                help: Enable report of unavailability.
+            disable_report:
+                action: store_true
+                help: Disable report of unavailability.
+
+    - title: Applications options
+      options:
+        envs:
+            nargs: '*'
+            match: '[+-]?[^=]*=[^=]*$'
+            help: Environment variables.
+
+    - <<<: _ARGS_
+      args:
+        platform:
+            type: PlatformURI
+            metavar: URI
+            help: URI of the platform to update.

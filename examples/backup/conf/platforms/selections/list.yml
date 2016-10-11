@@ -1,0 +1,20 @@
+# Output columns.
+columns:
+    - title: Path
+      size: 60
+      tina_fields: [path]
+    - title: Strategies
+      size: 12
+      tina_fields: [strategies]
+    - title: Filter on name
+      size: 16
+      tina_fields: [filter_on_name]
+      format: lib.utils.format_bool(selection.filter_on_name)
+    - title: Include
+      size: 60
+      tina_fields: [select]
+      format: lib.utils.format_list(selection.select)
+    - title: Exclude
+      size: 60
+      tina_fields: [reject]
+      format: lib.utils.format_list(selection.reject)

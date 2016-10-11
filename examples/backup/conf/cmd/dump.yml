@@ -1,0 +1,13 @@
+help: Dump datas to the database.
+description: Dump datas to the database.
+add_help: false
+execute:
+    module: commands.dump
+groups:
+    - _MAIN_
+
+    - <<<: _ARGS_
+      args:
+        catalogs:
+            nargs: '*'
+            help: 'Catalogs on which the datas are retrieved (default: all catalogs).'

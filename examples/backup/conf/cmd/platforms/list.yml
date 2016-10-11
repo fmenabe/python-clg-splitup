@@ -1,0 +1,97 @@
+help: List platforms (hosts and applications).
+description: List platforms (hosts and applications).
+add_help: false
+execute:
+    module: commands.platforms.list
+groups:
+    - _MAIN_
+
+    - title: Format options
+      options:
+        page:
+            action: store_true
+            help: Page output.
+        format:
+            short: f
+            choices: [text, csv, dokuwiki]
+            default: text
+            help: 'Output format (choices: __CHOICES__; default: __DEFAULT__).'
+
+    - title: Source options
+      description: >
+        Indicate whether the datas are retrieved on the Mongo database at a
+        given date or in TiNa catalogs. If none of theses options are set, datas
+        are retrieved on the Mongo database at the current date.
+      exclusive_groups:
+        - required: false
+          options:
+            date:
+                short: d
+                type: Date
+                help: 'Retrieve datas from dumps at the given date (default: today).'
+            use_catalog:
+                short: u
+                action: store_true
+                help: Retrieve datas from catalogs.
+
+    - title: Filtering options
+      options:
+        catalogs:
+            short: c
+            nargs: '+'
+            help: Catalogs to print datas.
+        name:
+            short: n
+            help: Filter on name with a regular expression.
+        apps:
+            action: store_true
+            help: Filter on applications.
+        hosts:
+            action: store_true
+            help: Filter on hosts.
+        schedules:
+            short: s
+            nargs: '*'
+            help: Filter on given schedule(s).
+        pools:
+            short: p
+            nargs: '*'
+            help: Filter on given pool.
+
+      exclusive_groups:
+        - required: False
+          options:
+            enabled:
+                action: store_true
+                help: >
+                    Filter on enabled platforms. This must not be used
+                    with --enabled option.
+            disabled:
+                action: store_true
+                help: >
+                    Filter on disabled platforms. This must not be used
+                    with --disabled option.
+
+    - title: Columns options
+      options:
+        host_type:
+            action: store_true
+            help: Show the operating system for hosts.
+        version:
+            action: store_true
+            help: Show TiNa version for the hosts.
+        app_envs:
+            action: store_true
+            help: Show environment variables for applications.
+        app_type:
+            action: store_true
+            help: Show application's type.
+        pre_processing:
+            action: store_true
+            help: Show pre-processing script.
+        post_processing:
+            action: store_true
+            help: Show post-processing script.
+        selections:
+            action: store_true
+            help: Show selections.

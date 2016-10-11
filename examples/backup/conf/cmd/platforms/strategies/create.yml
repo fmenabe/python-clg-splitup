@@ -1,0 +1,57 @@
+help: Create a strategy.
+description: Create a strategy.
+add_help: false
+print_help: true
+execute:
+    module: commands.platforms.strategies.create
+groups:
+    - _MAIN_
+
+    - title: Attributs options
+      options:
+        nfs:
+            action: store_true
+            help: NFS.
+
+        no_fulls:
+            action: store_true
+            help: Disable fulls.
+
+        no_incrs:
+            action: store_true
+            help: Disable incrementals.
+
+        fulls_schedule:
+            help: Schedule for the fulls.
+
+        incrs_schedule:
+            help: Schedule for the incrementals.
+
+        pre_processing:
+            help: Pre-processing script.
+
+        post_processing:
+            help: Post_processing script.
+
+        type:
+            choices: [Backup, SnapShot, Replication]
+            default: Backup
+            metavar: TYPE
+            help: 'Type (choices: __CHOICES__; default: __DEFAULT__).'
+
+    - <<<: _ARGS_
+      args:
+        platform:
+            match: '^[^:]*:[^:]*'
+            help: Platform.
+
+        name:
+            help: Name.
+
+        full_pool:
+            metavar: fulls_pool
+            help: Media pool for totals.
+
+        incr_pool:
+            metavar: incrs_pool
+            help: Media pool for incrementals.

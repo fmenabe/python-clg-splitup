@@ -1,0 +1,18 @@
+help: Delete the selection of a plaform.
+description: Delete the selection of a platform.
+print_help: True
+add_help: False
+execute:
+    module: commands.platforms.selections.delete
+groups:
+    - _MAIN_
+
+    - <<<: _ARGS_
+      args:
+        platform:
+            type: PlatformURI
+            metavar: platform
+            help: Platform URI ({host,app}:NAME@CATALOG).
+
+        path:
+            help: Path of the selection.

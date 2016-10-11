@@ -1,0 +1,16 @@
+help: Delete alarm(s).
+description: Delete alarm(s).
+add_help: False
+print_help: True
+execute:
+    module: commands.alarms.delete
+groups:
+    - _MAIN_
+
+    - <<<: _ARGS_
+      args:
+        alarms:
+            nargs: '+'
+            type: AlarmsURI
+            metavar: alarm
+            help: Alarm URI (ID@CATALOG).

@@ -1,0 +1,75 @@
+# Output columns.
+columns:
+    - title: Platform
+      size: 32
+      tina_fields: [platform]
+      format: job.platform
+    - title: Catalog
+      size: 13
+      format: job.catalog
+    - title: Id
+      size: 8
+      tina_fields: [id]
+      format: job.id
+    - title: Strategy
+      size: 10
+      tina_fields: [strategy]
+      format: job.strategy
+    - title: Type
+      size: 13
+      tina_fields: [type]
+      format: job.type
+    - title: Mode
+      size: 10
+      tina_fields: [mode]
+      format: job.mode
+    - title: Status
+      size: 27
+      tina_fields: [status]
+      format: job.status
+    - title: Volume
+      size: 10
+      option: volume
+      tina_fields: [volume]
+      format: job.volume
+    - title: Objects
+      size: 10
+      option: objects
+      tina_fields: [object]
+      format: job.objects
+    - title: Submit date
+      size: 21
+      tina_fields: [date_submit]
+      format: lib.utils.format_date(job.date_submit)
+    - title: Creation date
+      size: 21
+      option: creation_date
+      tina_fields: [date_create]
+      format: lib.utils.format_date(job.date_create)
+    - title: Run date
+      size: 21
+      tina_fields: [date_run]
+      format: lib.utils.format_date(job.date_run)
+    - title: End date
+      size: 21
+      tina_fields: [date_end]
+      format: lib.utils.format_date(job.date_end)
+    - title: Duration
+      size: 11
+      tina_fields: [type, date_submit, date_run, date_end]
+      format: format_duration(job.type, job.date_submit, job.date_run, job.date_end)
+    - title: Speed
+      size: 13
+      option: speed
+      tina_fields: [date_run, date_end, volume]
+      format: format_speed(job.date_run, job.date_end, job.volume)
+    - title: Alarms
+      size: 36
+      option: alarms
+      tina_fields: [alarms.id, alarms.message]
+      format: format_alarms(job.alarms)
+    - title: Cartridges
+      size: 36
+      option: cartridges
+      tina_fields: [cartridges.name]
+      format: format_cartridges(job.cartridges)

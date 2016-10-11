@@ -1,0 +1,77 @@
+alarms_fields: &ALARMS_FIELDS
+    id: 1
+    message: 1
+    help_id: 1
+    help_message: 1
+    severity: 1
+    acknowledged: 1
+    count: 1
+    date_first: 1
+    date_last: 1
+
+strategies_fields: &STRATEGIES_FIELDS
+    name: 1
+    type: 1
+    format: 1
+    nfs: 1
+    backup_acls: 1
+    relaunchable: 1
+    retry_interval: 1
+    retry_number: 1
+    pre_processing: 1
+    post_processing: 1
+    fulls_enabled: 1
+    fulls_synthetic: 1
+    fulls_synthetic_strategy: 1
+    fulls_schedule:
+        name: 1
+    fulls_pools:
+        name: 1
+    incrs_enabled: 1
+    incrs_schedule:
+        name: 1
+    incrs_pools:
+        name: 1
+
+selections_fields: &SELECTIONS_FIELDS
+    path: 1
+    strategies: 1
+    format: 1
+    filter_on_name: 1
+    select: 1
+    reject: 1
+    filter_on_date: 1
+    day_number: 1
+    filter_on_size: 1
+    max_size: 1
+    phase_time: 1
+
+hosts_fields:
+    name: 1
+    type: 1
+    hostgroup_id: 1
+    enabled: 1
+    no_report: 1
+    protocol: 1
+    version: 1
+    strategies: *STRATEGIES_FIELDS
+    selections: *SELECTIONS_FIELDS
+    alarms: *ALARMS_FIELDS
+
+hosts_options:
+    map_selections_to_strategies: true
+
+apps_fields:
+    name: 1
+    hostgroup_id: 1
+    type: 1
+    enabled: 1
+    host:
+        name: 1
+    envs: 1
+    strategies: *STRATEGIES_FIELDS
+    selections: *SELECTIONS_FIELDS
+    alarms: *ALARMS_FIELDS
+
+apps_options:
+    map_selections_to_strategies: true

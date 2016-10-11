@@ -1,0 +1,25 @@
+help: List selections of a platform.
+description: List selection of a platform.
+add_help: False
+execute:
+    module: commands.platforms.selections.list
+groups:
+    - _MAIN_
+
+    - title: Formatting options
+      options:
+        page:
+            action: store_true
+            help: Page output.
+        format:
+            short: f
+            choices: [text, csv, dokuwiki]
+            default: text
+            help: 'Output format (choices: __CHOICES__; default: __DEFAULT__).'
+
+    - <<<: _ARGS_
+      args:
+        platform:
+            type: PlatformURI
+            metavar: platform
+            help: Platform URI ({host,app}:NAME@CATALOG).

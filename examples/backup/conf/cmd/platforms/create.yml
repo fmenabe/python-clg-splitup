@@ -1,0 +1,66 @@
+help: Create a platform.
+description: >
+    Create a platform on a catalog. A platform is either an host or an application.
+    The command takes at first parameter the platform URI (which is of format:
+    {host,app}:NAME@CATALOG). The second parameter is the type of the platform which
+    corresponds to the operating system for a host and a type for an application.
+    The last parameter is only for applications and is the name of the host on which
+    the application is attached.
+
+    Arguments are required parameters for a host/application and options defines optionals
+    parameters.
+add_help: false
+print_help: true
+execute:
+    module: commands.platforms.create
+groups:
+    - _MAIN_
+
+    - title: Common options between hosts and applications
+      options:
+        comment:
+            help: Description of the host/application..
+
+        enable:
+            action: store_true
+            help: Enable the host/application at the creation.
+
+    - title: Host options
+      options:
+        no_report:
+            action: store_true
+            help: Disable logging of errors when the host is unavailable.
+
+        protocol:
+            choices: ['TiNa', 'NDMP', 'both']
+            default: TiNa
+            metavar: PROTOCOL
+            help: 'Protocol (choices: __CHOICES__; default __DEFAULT_).'
+
+        ndmp_user:
+            help: NDMP user (only when protocol is 'NDMP').
+
+        ndmp_password:
+            help: NDMP password (only when protocol is 'NDMP').
+
+    - title: Applications options
+      options:
+        envs:
+            nargs: '*'
+            match: '[^=]*=[^=]*$'
+            metavar: ENV
+            help: Environment variables.
+
+    - <<<: _ARGS_
+      args:
+        platform:
+            type: PlatformURI
+            metavar: platform
+            help: Platform URI ({host,app}:NAME@CATALOG).
+
+        type:
+            help: Operating for an host and type for an application.
+
+        host:
+            nargs: '?'
+            help: Hostname on which the application will be attached.

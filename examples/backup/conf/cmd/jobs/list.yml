@@ -1,0 +1,97 @@
+help: List jobs.
+description: List jobs.
+add_help: false
+execute:
+    module: commands.jobs.list
+groups:
+    - _MAIN_
+
+    - title: Source options
+      description: >
+        Indicate whether the datas are retrieved on the Elasticsearch database at
+        a given date or in TiNa catalogs. If none of theses options are set, datas
+        are retrieved on the Elasticsearch database at the current date.
+      exclusive_groups:
+        - required: false
+          options:
+            date:
+                short: d
+                type: Date
+                help: >
+                    Retrieve datas from dumps at the given date.
+            use_catalog:
+                short: u
+                action: store_true
+                help: >
+                    Retrieve datas from catalogs.
+
+    - title: Filtering options
+      options:
+        catalogs:
+            short: c
+            nargs: "*"
+            help: Catalogs to print datas.
+        name:
+            short: n
+            help: Filter on name with a regular expression.
+        types:
+            short: t
+            nargs: "*"
+            choices: [host, app]
+            default: [host, app]
+            help: "Filter on platform type (default: __DEFAULT__)."
+        schedules:
+            short: s
+            nargs: '*'
+            help: Filter on given schedule(s).
+        pools:
+            short: p
+            nargs: '*'
+            help: Filter on given pool.
+
+      exclusive_groups:
+        - required: false
+          options:
+            active:
+                short: a
+                action: store_true
+                help: >
+                    Filter on active platforms. This must not be used
+                    with -a/--active option.
+                conflict: [inactive]
+            inactive:
+                short: i
+                action: store_true
+                help: >
+                    Filter on inactive platforms. This must not be used
+                    with -i/--inactive option.
+
+    - title: Columns options
+      options:
+        host_type:
+            action: store_true
+            help: Show the operating system for the hosts.
+
+        version:
+            action: store_true
+            help: Show TiNa version for the hosts.
+
+        envs:
+            action: store_true
+            help: Show environment variables for applications.
+
+        app_type:
+            action: store_true
+            help: Show applications Type.
+
+        selections:
+            action: store_true
+            help: Show selections.
+
+        pre_processing:
+            action: store_true
+            help: Show pre-processing script.
+
+        post_processing:
+            action: store_true
+            help: Show post-processing script.

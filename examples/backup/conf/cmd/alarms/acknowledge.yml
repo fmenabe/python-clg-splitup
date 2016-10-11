@@ -1,0 +1,23 @@
+help: Acknowledge alarm(s).
+description: Acknowledge alarm(s).
+add_help: False
+print_help: True
+execute:
+    module: commands.alarms.acknowledge
+groups:
+    - _MAIN_
+
+    - <<<: _OPTS_
+      options:
+        permanently:
+            short: p
+            action: store_true
+            help: Acknowledge alarm(s) permanently.
+
+    - <<<: _ARGS_
+      args:
+        alarms:
+            nargs: '+'
+            type: AlarmsURI
+            metavar: alarm
+            help: Alarms URI ((ID1[:ID2]|*)@CATALOG).

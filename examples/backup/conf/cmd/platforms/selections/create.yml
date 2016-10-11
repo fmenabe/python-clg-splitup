@@ -1,0 +1,33 @@
+help: Create a selection.
+description: Create a selection.
+add_help: False
+print_help: True
+execute:
+    module: commands.platforms.selections.create
+groups:
+    - _MAIN_
+
+    - title: Attributs options
+      options:
+        include:
+            nargs: '+'
+            help: Paths to include.
+
+        exclude:
+            nargs: '+'
+            help: Paths to exclude.
+
+    - <<<: _ARGS_
+      args:
+        platform:
+            type: PlatformURI
+            metavar: platform
+            help: Platform URI ({host,app}:NAME@CATALOG).
+
+        path:
+            help: Path of the selection.
+
+        strategies:
+            metavar: strategies
+            choices: [A, B, C, D, AB, AC, AD, BC, BD, CD, ABC, ABD, ACD, BCD, ABCD]
+            help: 'Strategies (choices: __CHOICES__).'

@@ -1,0 +1,47 @@
+# Output columns.
+columns:
+    - title: URI
+      size: 18
+      tina_fields: [id]
+      format: format_uri(alarm.catalog, alarm.id)
+    - title: Severity
+      size: 10
+      tina_fields: [severity]
+      format: alarm.severity
+    - title: First date
+      size: 21
+      option: first_date
+      tina_fields: [date_first]
+      format: lib.utils.format_date(alarm.date_first)
+    - title: Last date
+      size: 21
+      tina_fields: [date_last]
+      format: lib.utils.format_date(alarm.date_last)
+    - title: Count
+      size: 7
+      tina_fields: [count]
+      format: alarm.count
+    - title: Object
+      size: 40
+      tina_fields: [object]
+      format: format_obj(alarm.object)
+    - title: Acknowledged
+      size: 16
+      tina_fields: [acknowledged]
+      format: alarm.acknowledged
+    - title: Help message
+      size: 51
+      option: help_message
+      tina_fields: [help_id, help_message]
+      format: format_help_message(alarm.help_id, alarm.help_message)
+    - title: Message
+      size: 65
+      tina_fields: [message]
+      format: alarm.message
+
+severities: [Minor, Major, Critical]
+severity_colors:
+    Minor: 0;30;103
+    Major: 0;30;43
+    Critical: 0;30;101
+header_color: 0;30;47

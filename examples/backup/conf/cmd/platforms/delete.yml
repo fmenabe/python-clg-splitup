@@ -1,0 +1,17 @@
+help: Delete a platform.
+description: >
+    Delete a platform on a catalog. It takes a platform URI as argument which
+    is of format {host,app}:NAME@CATALOG.
+add_help: false
+print_help: true
+execute:
+    module: commands.platforms.delete
+groups:
+    - _MAIN_
+
+    - <<<: _ARGS_
+      args:
+        platform:
+            type: PlatformURI
+            metavar: platform
+            help: Platform URI ({host,app}:NAME@CATALOG).

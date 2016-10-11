@@ -1,0 +1,38 @@
+help: Update a selection.
+description: Update a selection of a platform.
+add_help: False
+print_help: True
+execute:
+    module: commands.platforms.selections.update
+negative_value: '^-\d+$|^-\d*\.\d+$|^-[/].*$'
+groups:
+    - _MAIN_
+
+    - title: Attributs options
+      options:
+        include:
+            nargs: '+'
+            help: >
+                Paths to include. Use the sign '+' for adding a selection and
+                the sign '-' for removing a selection (no sign add a selection).
+
+        exclude:
+            nargs: '+'
+            help: >
+                Paths to exclude. Use the sign '+' for adding a selection and
+                the sign '-' for removing a selection (no sign add a selection).
+
+        strategies:
+            metavar: STRATEGIES
+            choices: [A, B, C, D, AB, AC, AD, BC, BD, ABC, ACD, BCD, ABCD]
+            help: 'Update strategies for the selection (choices: __CHOICES__).'
+
+    - <<<: _ARGS_
+      args:
+        platform:
+            type: PlatformURI
+            metavar: platform
+            help: Platform URI ({host,app}:NAME@CATALOG).
+
+        path:
+            help: Path of the selection.

@@ -1,0 +1,80 @@
+help: List alarms.
+description: List alarms.
+add_help: false
+execute:
+    module: commands.alarms.list
+groups:
+    - _MAIN_
+
+    - <<<: _OPTS_
+      options:
+        catalogs:
+            short: c
+            nargs: '+'
+            help: Filter on catalogs.
+        colors:
+            action: store_true
+            help: Print line in colors based on the severity.
+
+    - title: Format options
+      options:
+        page:
+            action: store_true
+            help: Page output.
+        format:
+            short: f
+            choices: [text, csv, dokuwiki]
+            default: text
+            help: 'Output format (choices: __CHOICES__; default: __DEFAULT__).'
+
+    - title: Filtering options
+      options:
+        ids:
+            nargs: '+'
+            type: int
+            help: Filter on alarms ids.
+        obj_type:
+            nargs: '+'
+            metavar: OBJ_TYPE
+            choices: [Host, Drive, Pool, User, Library, Cartridge, Application]
+            help: 'Filter on object types (choices: __CHOICES__).'
+        obj_name:
+            short: o
+            help: Filter on the object name (the value is a regular expression).
+        minor:
+            short: m
+            action: store_true
+            help: Filter on minor severity.
+        major:
+            short: M
+            action: store_true
+            help: Filter on major severity.
+        critical:
+            short: C
+            action: store_true
+            help: Filter on critical severity.
+        unacknowledged:
+            short: u
+            action: store_true
+            help: Filter on unacknowledged alarms.
+        temporary:
+            short: t
+            action: store_true
+            help: Filter on temporary acknowledged alarms.
+        permanent:
+            short: p
+            action: store_true
+            help: Filter on permanently acknowledge alarms.
+        delta:
+            short: d
+            type: int
+            help: Filter on alarms raised in the last hours.
+
+    - title: Columns options
+      options:
+        first_date:
+            action: store_true
+            help: Add a column indicating the first occurence of an alarm.
+        help_message:
+            action: store_true
+            help: Add the help message column.

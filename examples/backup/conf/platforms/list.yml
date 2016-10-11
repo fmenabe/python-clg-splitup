@@ -1,0 +1,77 @@
+# Output columns.
+columns:
+    - title: URI
+      size: 40
+      tina_fields: [name]
+      format: format_uri(platform.catalog, platform.name)
+    - title: Type
+      size: 6
+      format: platform.ptype
+    - title: Host type
+      size: 25
+      option: host_type
+      tina_fields: [type]
+      format: platform.host_type
+    - title: Version
+      size: 18
+      option: version
+      tina_fields: [version]
+      format: platform.version
+    - title: App type
+      size: 30
+      option: app_type
+      tina_fields: [type]
+      format: platform.app_type
+    - title: App envs
+      size: 50
+      option: app_envs
+      tina_fields: [envs]
+      format: format_list(platform.envs)
+    - title: Enabled
+      size: 9
+      tina_fields: [enabled]
+      format: format_bool(platform.enabled)
+    - title: Strategy
+      size: 10
+      tina_fields:
+        - strategies.name
+        - strategies.nfs
+        - strategies.fulls_enabled
+        - strategies.fulls_synthetic
+        - strategies.incrs_enabled
+      format: format_strategy(strategy.name,
+                              strategy.nfs,
+                              strategy.fulls_enabled,
+                              strategy.fulls_synthetic,
+                              strategy.incrs_enabled)
+    - title: Fulls schedule
+      size: 30
+      tina_fields: [strategies.fulls_schedule.name]
+      format: strategy.fulls_schedule
+    - title: Fulls pools
+      size: 23
+      tina_fields: [strategies.fulls_pools.name]
+      format: format_list(strategy.fulls_pools)
+    - title: Incrs schedule
+      size: 22
+      tina_fields: [strategies.incrs_schedule.name]
+      format: strategy.incrs_schedule
+    - title: Incrs pools
+      size: 22
+      tina_fields: [strategies.incrs_pools.name]
+      format: format_list(strategy.incrs_pools)
+    - title: Pre processing
+      size: 32
+      option: pre_processing
+      tina_fields: [strategies.pre_processing]
+      format: strategy.pre_processing
+    - title: Post processing
+      size: 32
+      option: post_processing
+      tina_fields: [strategies.post_processing]
+      format: strategy.post_processing
+    - title: Selections
+      size: 60
+      option: selections
+      tina_fields: [selections.strategies, selections.path, selections.select, selections.reject]
+      format: format_selections(strategy.selections)

@@ -1,0 +1,6 @@
+help: Commands for managing selections.
+description: Commands for managing selections.
+add_help: False
+print_help: true
+groups:
+    - <<<: _SUB_

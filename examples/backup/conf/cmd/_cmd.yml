@@ -1,0 +1,7 @@
+description: Commands for managing backups
+page_help: true
+print_help: true
+add_help_cmd: true
+add_help: false
+groups:
+    - <<<: _SUB_

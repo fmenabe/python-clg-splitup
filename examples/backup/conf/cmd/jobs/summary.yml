@@ -1,0 +1,75 @@
+help: List a summary of jobs the have run the last hours.
+description: List a summary jobs that have run the last hours.
+add_help: false
+execute:
+    module: commands.jobs.summary
+groups:
+    - _MAIN_
+
+    - <<<: _OPTS_
+      options:
+        delta:
+            short: d
+            type: int
+            default: 24
+            help: 'Delta, in hours, for retrieving jobs (default: __DEFAULT__).'
+
+    - title: Filtering options
+      options:
+        catalogs:
+            short: c
+            nargs: '+'
+            help: Filter on catalogs.
+        platforms:
+            short: p
+            nargs: '+'
+            help: >
+                Filter on hosts or applications names (each value is a regular
+                expression).
+        running:
+            short: r
+            action: store_true
+            help: Filter on running (active) jobs.
+        ok:
+            short: o
+            action: store_true
+            help: Filter on finished jobs with no errors.
+        warning:
+            short: w
+            action: store_true
+            help: Filter on finished jobs with warnings.
+        error:
+            short: e
+            action: store_true
+            help: Filter on finished jobs with an error.
+        type:
+            short: t
+            choices: [backup, synthetic, restore, maintenance]
+            metavar: TYPE
+            help: 'Filter on job type (choices: __CHOICES__).'
+        mode:
+            short: m
+            choices: [full, incr]
+            metavar: MODE
+            help: 'Filter on job mode (choices: __CHOICES__).'
+
+    - title: Columns options
+      options:
+        creation_date:
+            action: store_true
+            help: Add a column with the creation date of the job.
+        objects:
+            action: store_true
+            help: Add a column with the number of objects of the job.
+        volume:
+            action: store_true
+            help: Add a column with the volume of the job.
+        alarms:
+            action: store_true
+            help: Add a column with the alarms of the job.
+        speed:
+            action: store_true
+            help: Add a column with the speed of the job.
+        cartridges:
+            action: store_true
+            help: Add a column with the cartridge(s) used by the job.

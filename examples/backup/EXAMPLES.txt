@@ -1,0 +1,214 @@
++(env) [=99% (87.77%)] [23:43] francois@zen:backup ¤ ./backups.py
+usage: backups.py [-h] {alarms,dump,help,jobs,platforms} ...
+
+Commands for managing backups
+
+Commands:
+  {alarms,dump,help,jobs,platforms}
+    alarms              Commands for managing alarms.
+    dump                Dump datas to the database.
+    help                Print commands' tree with theirs descriptions.
+    jobs                Commands for managing jobs.
+    platforms           Commands for managing platforms.
+
+Options:
+  -h, --help            Show this help message and exit.
+
+
++(env) [=99% (87.77%)] [23:44] francois@zen:backup ¤ ./backups.py alarms acknowledge
+usage: backups.py alarms acknowledge [-h] [--logdir LOGDIR]
+                                     [--loglevel LOGLEVEL]
+                                     [--conf-file FILEPATH] [-p]
+                                     alarm [alarm ...]
+
+Acknowledge alarm(s).
+
+Common options:
+  -h, --help            Show this help message and exit.
+  --logdir LOGDIR       Log directory (default: /home/francois/dev/python-
+                        clif/examples/backup/logs).
+  --loglevel LOGLEVEL   Log level on console (choices: verbose, debug, info,
+                        warn, error, none; default: info).
+  --conf-file FILEPATH  Main configuration file (default:
+                        /home/francois/dev/python-
+                        clif/examples/backup/conf/conf.yml).
+
+Optional options:
+  -p, --permanently     Acknowledge alarm(s) permanently.
+
+Arguments:
+  alarm                 Alarms URI ((ID1[:ID2]|*)@CATALOG).
+
+
++(env) [=99% (87.77%)] [23:44] francois@zen:backup ¤ ./backups.py alarms acknowledge 1@catalog1
+2016-10-11 23:44:34,708 INFO: command-line arguments:
+{'alarms': [Alarm(uri='1@catalog1', catalog='catalog1', ids=[1])],
+ 'command0': 'alarms',
+ 'command2': 'acknowledge',
+ 'conf_file': '/home/francois/dev/python-clif/examples/backup/conf/conf.yml',
+ 'logdir': '/home/francois/dev/python-clif/examples/backup/logs',
+ 'loglevel': 'info',
+ 'permanently': False}
+
+
++(env) [=99% (87.77%)] [23:44] francois@zen:backup ¤ ./backups.py alarms list
+2016-10-11 23:44:55,941 INFO: command-line argments:
+{'catalogs': None,
+ 'colors': False,
+ 'command0': 'alarms',
+ 'command2': 'list',
+ 'conf_file': '/home/francois/dev/python-clif/examples/backup/conf/conf.yml',
+ 'critical': False,
+ 'delta': None,
+ 'first_date': False,
+ 'format': 'text',
+ 'help_message': False,
+ 'ids': None,
+ 'logdir': '/home/francois/dev/python-clif/examples/backup/logs',
+ 'loglevel': 'info',
+ 'major': False,
+ 'minor': False,
+ 'obj_name': None,
+ 'obj_type': None,
+ 'page': False,
+ 'permanent': False,
+ 'temporary': False,
+ 'unacknowledged': False}
+2016-10-11 23:44:55,942 INFO: columns definition from configuration file (conf/alarms/list.yml):
+[{'format': 'format_uri(alarm.catalog, alarm.id)',
+  'size': 18,
+  'tina_fields': ['id'],
+  'title': 'URI'},
+  ...
+  'title': 'Message'}]
+
+
++(env) [=99% (87.77%)] [23:45] francois@zen:backup ¤ ./backups.py platforms create host:host1@catalog1 Linux
+2016-10-11 23:46:15,422 INFO: command-line arguments:
+{'command0': 'platforms',
+ 'command2': 'create',
+ 'comment': None,
+ 'conf_file': '/home/francois/dev/python-clif/examples/backup/conf/conf.yml',
+ 'enable': False,
+ 'envs': None,
+ 'host': None,
+ 'logdir': '/home/francois/dev/python-clif/examples/backup/logs',
+ 'loglevel': 'info',
+ 'ndmp_password': None,
+ 'ndmp_user': None,
+ 'no_report': False,
+ 'platform': Platform(uri='host:host1@catalog1', catalog='catalog1', type='host', name='host1'),
+ 'protocol': 'TiNa',
+ 'type': 'Linux'}
+
+
++(env) [=99% (87.77%)] [23:51] francois@zen:backup ¤ ./backups.py platforms selections create host:host1@catalog1 /etc A
+2016-10-11 23:51:42,915 INFO: command-line arguments:
+{'command0': 'platforms',
+ 'command2': 'selections',
+ 'command3': 'create',
+ 'conf_file': '/home/francois/dev/python-clif/examples/backup/conf/conf.yml',
+ 'exclude': None,
+ 'include': None,
+ 'logdir': '/home/francois/dev/python-clif/examples/backup/logs',
+ 'loglevel': 'info',
+ 'path': '/etc',
+ 'platform': Platform(uri='host:host1@catalog1', catalog='catalog1', type='host', name='host1'),
+ 'strategies': 'A'}
+
+
++(env) [=99% (87.77%)] [23:50] francois@zen:backup ¤ ./backups.py platforms selections list host:host1@catalog1
+2016-10-11 23:51:01,757 INFO: command-line arguments:
+{'command0': 'platforms',
+ 'command2': 'selections',
+ 'command3': 'list',
+ 'conf_file': '/home/francois/dev/python-clif/examples/backup/conf/conf.yml',
+ 'format': 'text',
+ 'logdir': '/home/francois/dev/python-clif/examples/backup/logs',
+ 'loglevel': 'info',
+ 'page': False,
+ 'platform': Platform(uri='host:host1@catalog1', catalog='catalog1', type='host', name='host1')}
+2016-10-11 23:51:01,758 INFO: columns definition from configuration file (conf/platforms/selections/list.yml):
+[{'size': 60, 'tina_fields': ['path'], 'title': 'Path'},
+ {'size': 12, 'tina_fields': ['strategies'], 'title': 'Strategies'},
+ {'format': 'lib.utils.format_bool(selection.filter_on_name)',
+  'size': 16,
+  'tina_fields': ['filter_on_name'],
+  'title': 'Filter on name'},
+ {'format': 'lib.utils.format_list(selection.select)',
+  'size': 60,
+  'tina_fields': ['select'],
+  'title': 'Include'},
+ {'format': 'lib.utils.format_list(selection.reject)',
+  'size': 60,
+  'tina_fields': ['reject'],
+  'title': 'Exclude'}]
+
+
++(env) [=99% (87.77%)] [23:56] francois@zen:backup ¤ ./backups.py platforms strategies create
+usage: backups.py platforms strategies create [-h] [--logdir LOGDIR]
+                                              [--loglevel LOGLEVEL]
+                                              [--conf-file FILEPATH] [--nfs]
+                                              [--no-fulls] [--no-incrs]
+                                              [--fulls-schedule FULLS_SCHEDULE]
+                                              [--incrs-schedule INCRS_SCHEDULE]
+                                              [--pre-processing PRE_PROCESSING]
+                                              [--post-processing POST_PROCESSING]
+                                              [--type TYPE]
+                                              platform name fulls_pool
+                                              incrs_pool
+
+Create a strategy.
+
+Common options:
+  -h, --help            Show this help message and exit.
+  --logdir LOGDIR       Log directory (default: /home/francois/dev/python-
+                        clif/examples/backup/logs).
+  --loglevel LOGLEVEL   Log level on console (choices: verbose, debug, info,
+                        warn, error, none; default: info).
+  --conf-file FILEPATH  Main configuration file (default:
+                        /home/francois/dev/python-
+                        clif/examples/backup/conf/conf.yml).
+
+Attributs options:
+  --nfs                 NFS.
+  --no-fulls            Disable fulls.
+  --no-incrs            Disable incrementals.
+  --fulls-schedule FULLS_SCHEDULE
+                        Schedule for the fulls.
+  --incrs-schedule INCRS_SCHEDULE
+                        Schedule for the incrementals.
+  --pre-processing PRE_PROCESSING
+                        Pre-processing script.
+  --post-processing POST_PROCESSING
+                        Post_processing script.
+  --type TYPE           Type (choices: Backup, SnapShot, Replication; default:
+                        Backup).
+
+Arguments:
+  platform              Platform.
+  name                  Name.
+  fulls_pool            Media pool for totals.
+  incrs_pool            Media pool for incrementals.
+
+
++(env) [=99% (87.77%)] [23:56] francois@zen:backup ¤ ./backups.py platforms strategies create host:host1@catalog1 A FULLS_POOL1 INCRS_POOL1
+2016-10-11 23:56:52,437 INFO: command-line arguments:
+{'command0': 'platforms',
+ 'command2': 'strategies',
+ 'command3': 'create',
+ 'conf_file': '/home/francois/dev/python-clif/examples/backup/conf/conf.yml',
+ 'full_pool': 'FULLS_POOL1',
+ 'fulls_schedule': None,
+ 'incr_pool': 'INCRS_POOL1',
+ 'incrs_schedule': None,
+ 'logdir': '/home/francois/dev/python-clif/examples/backup/logs',
+ 'loglevel': 'info',
+ 'name': 'A',
+ 'nfs': False,
+ 'no_fulls': False,
+ 'no_incrs': False,
+ 'platform': 'host:host1@catalog1',
+ 'post_processing': None,
+ 'pre_processing': None,
+ 'type': 'Backup'}

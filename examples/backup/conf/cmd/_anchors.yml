@@ -1,0 +1,45 @@
+## Default options.
+help: &HELP
+    short: h
+    action: help
+    default: __SUPPRESS__
+    help: Show this help message and exit.
+logdir: &LOGDIR
+    default: __FILE__/logs
+    help: 'Log directory (default: __DEFAULT__).'
+loglevel: &LOGLEVEL
+    choices: [verbose, debug, info, warn, error, none]
+    default: info
+    metavar: LOGLEVEL
+    help: 'Log level on console (choices: __CHOICES__; default: __DEFAULT__).'
+conf_file: &CONF_FILE
+    metavar: FILEPATH
+    default: __FILE__/conf/conf.yml
+    help: 'Main configuration file (default: __DEFAULT__).'
+
+
+## Default groups.
+# Group for a command having subcommands.
+sub:
+    title: Options
+    options:
+        help: *HELP
+
+# Main group of a command.
+main:
+    title: Common options
+    options:
+        help: *HELP
+        logdir: *LOGDIR
+        loglevel: *LOGLEVEL
+        conf_file: *CONF_FILE
+
+# Optional options of a command:
+opts:
+    title: Optional options
+
+required:
+    title: Required options
+
+args:
+    title: Arguments
