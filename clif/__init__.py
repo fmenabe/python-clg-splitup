@@ -16,15 +16,14 @@ class CliError(Exception):
     pass
 
 
-def init(path, hooks=None):
-    conf = _load_dir(path)
+def init(path=None, plugins=None):
+    conf = _load_dir(path or os.path.join(sys.path[0], 'conf', 'cmd'))
     setattr(_SELF, 'cmd', clg.CommandLine(conf))
     setattr(_SELF, 'hooks', hooks or [])
 
 
 def parse():
     return cmd.parse()
-
 
 def _load_dir(path):
     _load_types(path)
@@ -49,7 +48,6 @@ def _load_dir(path):
             conf['subparsers']['parsers'][cmd].update(_load_dir(parsers_path))
     return conf
 
-
 def _load_types(path):
     filepath = os.path.join(path, '_types.py')
     if not os.path.exists(filepath):
@@ -60,13 +58,11 @@ def _load_types(path):
             continue
         clg.TYPES[elt] = getattr(mdl, elt)
 
-
 def _load_anchors(path):
     filepath = os.path.join(path, '_anchors.yml')
     ANCHORS.update(yaml.load(open(filepath), Loader=YamlOrderedLoader)
                    if os.path.exists(filepath)
                    else {})
-
 
 def _load_file(path):
     def load_conf(conf):
