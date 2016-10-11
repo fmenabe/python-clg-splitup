@@ -16,11 +16,9 @@ class CliError(Exception):
     pass
 
 
-def init(path=None, plugins=None):
+def init(path=None):
     conf = _load_dir(path or os.path.join(sys.path[0], 'conf', 'cmd'))
     setattr(_SELF, 'cmd', clg.CommandLine(conf))
-    setattr(_SELF, 'hooks', hooks or [])
-
 
 def parse():
     return cmd.parse()
