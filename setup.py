@@ -1,16 +1,16 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(
-    name='clif',
-    version='0.2.2',
+    name='clg-splitup',
+    version='0.1.0',
     author='François Ménabé',
     author_email='francois.menabe@gmail.com',
-    url = 'http://github.com/fmenabe/python-clif',
-    download_url = 'http://github.com/fmenabe/python-clif',
+    url = 'https://clg.readthedocs.org/en/latest/',
+    download_url = 'http://github.com/fmenabe/python-clg-splitup',
     license='MIT License',
-    description='Framework for generating command-line',
+    description='Split up and organize elements of command-line programs based on python-clg.',
     long_description=open('README.rst').read(),
     keywords=['command-line', 'argparse', 'wrapper', 'clg', 'framework'],
     classifiers=[
@@ -21,8 +21,9 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Topic :: Utilities'
     ],
-    packages=['clif'],
+    py_modules=['clg/splitup'],
     install_requires=['clg', 'pyyaml', 'yamlordereddictloader'])
