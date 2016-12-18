@@ -1,69 +1,72 @@
+# coding: utf-8
+
 import os
 import sys
 import imp
 import clg
 import yaml
-from yamlordereddictloader import Loader as YamlOrderedLoader
+import yamlordereddictloader
 from collections import OrderedDict
 from pprint import pprint
 
+
 _SELF = sys.modules[__name__]
-_IGNORE = ('_anchors.yml', '_cmd.yml', '_subparsers.yml',  '_types.py')
 
 ANCHORS = {}
+CLG_CONSTS = ('types', 'actions', 'completers')
 
-class CliError(Exception):
+class ClifError(Exception):
     pass
 
 
-def init(path=None):
-    conf = _load_dir(path or os.path.join(sys.path[0], 'conf', 'cmd'))
-    setattr(_SELF, 'cmd', clg.CommandLine(conf))
+def init(cmd_file=None, anchors_file=None, cmd_dir=None,
+         lib_dir=None, commands_dir=None, completion=False):
+    # Get files paths.
+    setattr(_SELF, 'CMD_FILE', cmd_file or os.path.join(sys.path[0], 'cmd.yml'))
+    setattr(_SELF, 'ANCHORS_FILE',  anchors_file or os.path.join(sys.path[0], 'anchors.yml'))
+    setattr(_SELF, 'CMD_DIR', cmd_dir or os.path.join(sys.path[0], 'cmd'))
+    setattr(_SELF, 'LIB_DIR', lib_dir or os.path.join(sys.path[0], 'lib', 'clg'))
+    setattr(_SELF, 'COMMANDS_DIR', commands_dir or os.path.join(sys.path[0], 'commands'))
 
-def parse():
-    return cmd.parse()
+    # Load clg customizations (types, actions, completers).
+    load_clg_customizations()
 
-def _load_dir(path):
-    _load_types(path)
-    _load_anchors(path)
-    cmd_file = os.path.join(path, '_cmd.yml')
-    subparsers_file = os.path.join(path, '_subparsers.yml')
-    conf = _load_file(cmd_file) if os.path.exists(cmd_file) else OrderedDict()
-    if os.path.exists(subparsers_file):
-        conf.setdefault('subparsers', _load_file(subparsers_file))
-    for filename in sorted(os.listdir(path)):
-        filepath = os.path.join(path, filename)
-        cmd, fileext = os.path.splitext(filename)
-        if os.path.isdir(filepath) or filename in _IGNORE or fileext != '.yml':
-            continue
+    # Load anchors.
+    load_anchors()
 
-        (conf.setdefault('subparsers', {})
-             .setdefault('parsers', OrderedDict())
-             .update({cmd: _load_file(filepath)}))
+    # Load main configuration file.
+    try:
+        conf = load_file(CMD_FILE) or OrderedDict()
+    except FileNotFoundError:
+        raise ClifError('main file (cmd/cmd.yml) does not exists')
 
-        parsers_path = os.path.join(path, cmd)
-        if os.path.exists(parsers_path):
-            conf['subparsers']['parsers'][cmd].update(_load_dir(parsers_path))
-    return conf
+    # Load commands configuration.
+    if os.path.exists(CMD_DIR):
+        conf.update(load_dir(CMD_DIR))
 
-def _load_types(path):
-    filepath = os.path.join(path, '_types.py')
-    if not os.path.exists(filepath):
-        return
-    mdl = imp.load_source('_types', filepath)
-    for elt in dir(mdl):
-        if elt.startswith('__') and elt.endswith('__'):
-            continue
-        clg.TYPES[elt] = getattr(mdl, elt)
+    # Add commands directory to sys.path if necessary)
+    sys.path.append(os.path.join('/'.join((COMMANDS_DIR.split('/')[:-1]))))
 
-def _load_anchors(path):
-    filepath = os.path.join(path, '_anchors.yml')
-    ANCHORS.update(yaml.load(open(filepath), Loader=YamlOrderedLoader)
-                   if os.path.exists(filepath)
+    # Initialize clg and return command-line arguments.
+    return clg.init(raw=conf, completion=completion)
+
+def load_clg_customizations():
+    for const in CLG_CONSTS:
+        filepath = os.path.join(LIB_DIR, '%s.py' % const)
+        if os.path.exists(filepath):
+            mdl = imp.load_source(const, filepath)
+            elts = {elt: getattr(mdl, elt)
+                    for elt in dir(mdl)
+                    if not elt.startswith('__') and not elt.endswith('__')}
+            getattr(clg, const.upper()).update(elts)
+
+def load_anchors():
+    ANCHORS.update(yaml.load(open(ANCHORS_FILE), Loader=yamlordereddictloader.Loader)
+                   if os.path.exists(ANCHORS_FILE)
                    else {})
 
-def _load_file(path):
-    def load_conf(conf):
+def load_file(path):
+    def replace_anchors(conf):
         if isinstance(conf, str):
             try:
                 return (ANCHORS[conf[1:-1].lower()]
@@ -71,19 +74,48 @@ def _load_file(path):
                                 conf.endswith('_'), not conf.endswith('__')))
                         else conf)
             except KeyError:
-                raise CliError("(%s) invalid anchor '%s'" % (path, conf))
+                raise ClifError("(%s) invalid anchor '%s'" % (path, conf))
         elif isinstance(conf, dict):
             new_conf = OrderedDict()
             for param, value in conf.items():
                 if param == '<<<':
                     if not value.startswith('_') or not value.endswith('_'):
-                        raise CliError("%s: invalid anchor '%s'" % (path, value))
-                    new_conf.update(load_conf(value))
+                        raise ClifError("%s: invalid anchor '%s'" % (path, value))
+                    new_conf.update(replace_anchors(value))
                 else:
-                    new_conf[param] = load_conf(value)
+                    new_conf[param] = replace_anchors(value)
             return new_conf
         elif isinstance(conf, (list, tuple)):
-            return [load_conf(elt) for elt in conf]
+            return [replace_anchors(elt) for elt in conf]
         else:
             return conf
-    return load_conf(yaml.load(open(path), Loader=YamlOrderedLoader)) or {}
+    conf = yaml.load(open(path), Loader=yamlordereddictloader.Loader)
+    return replace_anchors(conf or {})
+
+def load_dir(dirpath):
+    conf = load_subparsers(dirpath)
+
+    for filename in sorted(os.listdir(dirpath)):
+        filepath = os.path.join(dirpath, filename)
+        cmd, fileext = os.path.splitext(filename)
+        if os.path.isdir(filepath) or filename == '_subparsers.yml' or fileext != '.yml':
+            continue
+
+        (conf.setdefault('subparsers', {})
+             .setdefault('parsers', OrderedDict())
+             .update({cmd: load_file(filepath)}))
+
+        parsers_path = os.path.join(dirpath, cmd)
+        if os.path.exists(parsers_path):
+            conf['subparsers']['parsers'][cmd].update(load_dir(parsers_path))
+        else:
+            mdl = '.'.join((os.path.basename(COMMANDS_DIR),
+                            os.path.relpath(dirpath, CMD_DIR).replace('/', '.'),
+                            cmd))
+            conf['subparsers']['parsers'][cmd]['execute'] = {'module': mdl}
+
+    return conf
+
+def load_subparsers(path):
+    filepath = os.path.join(path, '_subparsers.yml')
+    return {'subparsers': load_file(filepath)} if os.path.exists(filepath) else {}
