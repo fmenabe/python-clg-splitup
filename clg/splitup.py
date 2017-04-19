@@ -48,7 +48,7 @@ def init(cmd_file=None, anchors_file=None, cmd_dir=None,
     sys.path.append(os.path.join('/'.join((COMMANDS_DIR.split('/')[:-1]))))
 
     # Initialize clg and return command-line arguments.
-    return clg.init(raw=conf, completion=completion)
+    return clg.init(format='raw', data=conf, completion=completion)
 
 def load_clg_customizations():
     for const in CLG_CONSTS:
