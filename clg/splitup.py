@@ -112,7 +112,7 @@ def load_dir(dirpath):
             mdl = '.'.join((os.path.basename(COMMANDS_DIR),
                             os.path.relpath(dirpath, CMD_DIR).replace('/', '.'),
                             cmd))
-            conf['subparsers']['parsers'][cmd]['execute'] = {'module': mdl}
+            conf['subparsers']['parsers'][cmd]['execute'] = {'module': mdl.replace('-', '_')}
 
     return conf
 
