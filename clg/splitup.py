@@ -37,8 +37,8 @@ def init(cmd_file=None, anchors_file=None, cmd_dir=None,
     # Load main configuration file.
     try:
         conf = load_file(CMD_FILE) or OrderedDict()
-    except FileNotFoundError:
-        raise ClifError('main file (cmd/cmd.yml) does not exists')
+    except IOError:
+        raise ClifError('main file (%s) does not exists' % CMD_FILE)
 
     # Load commands configuration.
     if os.path.exists(CMD_DIR):
@@ -95,24 +95,32 @@ def load_file(path):
 def load_dir(dirpath):
     conf = load_subparsers(dirpath)
 
-    for filename in sorted(os.listdir(dirpath)):
-        filepath = os.path.join(dirpath, filename)
-        cmd, fileext = os.path.splitext(filename)
-        if os.path.isdir(filepath) or filename == '_subparsers.yml' or fileext != '.yml':
-            continue
+    subcommands = (
+        [command
+         for filename in sorted(os.listdir(dirpath))
+         for command, fileext in [os.path.splitext(filename)]
+         if (not os.path.isdir(os.path.join(dirpath, filename))
+             and fileext == '.yml')
+             and filename not in ('_order.yml', '_subparsers.yml')]
+        if not os.path.exists(os.path.join(dirpath, '_order.yml'))
+        else yaml.load(open(os.path.join(dirpath, '_order.yml'))))
+
+    for command in subcommands:
+        filepath = os.path.join(dirpath, '{:s}.yml'.format(command))
 
         (conf.setdefault('subparsers', {})
              .setdefault('parsers', OrderedDict())
-             .update({cmd: load_file(filepath)}))
+             .update({command: load_file(filepath)}))
 
-        parsers_path = os.path.join(dirpath, cmd)
+        parsers_path = os.path.join(dirpath, command)
         if os.path.exists(parsers_path):
-            conf['subparsers']['parsers'][cmd].update(load_dir(parsers_path))
+            conf['subparsers']['parsers'][command].update(load_dir(parsers_path))
         else:
-            mdl = '.'.join((os.path.basename(COMMANDS_DIR),
+            mdl = ('.'.join((os.path.basename(COMMANDS_DIR),
                             os.path.relpath(dirpath, CMD_DIR).replace('/', '.'),
-                            cmd))
-            conf['subparsers']['parsers'][cmd]['execute'] = {'module': mdl.replace('-', '_')}
+                            command))
+		      .replace('-', '_'))
+            conf['subparsers']['parsers'][command]['execute'] = {'module': mdl}
 
     return conf
 
