@@ -15,7 +15,7 @@ _SELF = sys.modules[__name__]
 ANCHORS = {}
 CLG_CONSTS = ('types', 'actions', 'completers')
 
-class ClifError(Exception):
+class CLGSplitupError(Exception):
     pass
 
 
@@ -38,7 +38,7 @@ def init(cmd_file=None, anchors_file=None, cmd_dir=None,
     try:
         conf = load_file(CMD_FILE) or OrderedDict()
     except IOError:
-        raise ClifError('main file (%s) does not exists' % CMD_FILE)
+        raise CLGSplitupError('main file (%s) does not exists' % CMD_FILE)
 
     # Load commands configuration.
     if os.path.exists(CMD_DIR):
@@ -74,13 +74,13 @@ def load_file(path):
                                 conf.endswith('_'), not conf.endswith('__')))
                         else conf)
             except KeyError:
-                raise ClifError("(%s) invalid anchor '%s'" % (path, conf))
+                raise CLGSplitupError("(%s) invalid anchor '%s'" % (path, conf))
         elif isinstance(conf, dict):
             new_conf = OrderedDict()
             for param, value in conf.items():
                 if param == '<<<':
                     if not value.startswith('_') or not value.endswith('_'):
-                        raise ClifError("%s: invalid anchor '%s'" % (path, value))
+                        raise CLGSplitupError("%s: invalid anchor '%s'" % (path, value))
                     new_conf.update(replace_anchors(value))
                 else:
                     new_conf[param] = replace_anchors(value)
