@@ -5,38 +5,60 @@ import sys
 import imp
 import clg
 import yaml
-import yamlordereddictloader
+import yamlloader
 from collections import OrderedDict
-from pprint import pprint
 
-
+# The module itself.
 _SELF = sys.modules[__name__]
 
-ANCHORS = {}
-CLG_CONSTS = ('types', 'actions', 'completers')
+CLG_CUSTOMISATIONS = (
+    'types',        # custom types for options and arguments
+    'actions',      # custom actions for options and arguments
+    'completers'    # custom completers for argcomplete
+)
 
+DEFAULTS = {
+    # Main configuration file of the CLI.
+    # default: cmd.yml file in main program directory
+    'cmd_file': os.path.join(sys.path[0], 'cmd.yml'),
+    # File containing reusable parts of configuration.
+    # default: anchors.yml file in main program directory
+    'anchors_file': os.path.join(sys.path[0], 'anchors.yml'),
+    # Directory containing subcommands CLI configuration.
+    # default: cmd/ directory in main program directory
+    'cmd_dir': os.path.join(sys.path[0], 'cmd'),
+    # Directory containing clg helpers (types, actions, ...)
+    # default: lib/clg directory in main program directory
+    'lib_dir': os.path.join(sys.path[0], 'lib', 'clg'),
+    # Directory containing commands logic.
+    # default: commands/ directory in main program directory
+    'commands_dir': os.path.join(sys.path[0], 'commands')
+}
+# Exception raised by this module.
 class CLGSplitupError(Exception):
     pass
 
 
 def init(cmd_file=None, anchors_file=None, cmd_dir=None,
          lib_dir=None, commands_dir=None, completion=False):
+    """Load command
+    """
     # Get files paths.
-    setattr(_SELF, 'CMD_FILE', cmd_file or os.path.join(sys.path[0], 'cmd.yml'))
-    setattr(_SELF, 'ANCHORS_FILE',  anchors_file or os.path.join(sys.path[0], 'anchors.yml'))
-    setattr(_SELF, 'CMD_DIR', cmd_dir or os.path.join(sys.path[0], 'cmd'))
-    setattr(_SELF, 'LIB_DIR', lib_dir or os.path.join(sys.path[0], 'lib', 'clg'))
-    setattr(_SELF, 'COMMANDS_DIR', commands_dir or os.path.join(sys.path[0], 'commands'))
+    setattr(_SELF, 'CMD_FILE', cmd_file or DEFAULTS['cmd_file'])
+    setattr(_SELF, 'ANCHORS_FILE', anchors_file or DEFAULTS['anchors_file'])
+    setattr(_SELF, 'CMD_DIR', cmd_dir or DEFAULTS['cmd_dir'])
+    setattr(_SELF, 'LIB_DIR', lib_dir or DEFAULTS['lib_dir'])
+    setattr(_SELF, 'COMMANDS_DIR', commands_dir or DEFAULTS['commands_dir'])
 
     # Load clg customizations (types, actions, completers).
     load_clg_customizations()
 
     # Load anchors.
-    load_anchors()
+    anchors = load_anchors()
 
     # Load main configuration file.
     try:
-        conf = load_file(CMD_FILE) or OrderedDict()
+        conf = load_file(CMD_FILE, anchors) or OrderedDict()
     except IOError:
         raise CLGSplitupError('main file (%s) does not exists' % CMD_FILE)
 
@@ -44,14 +66,14 @@ def init(cmd_file=None, anchors_file=None, cmd_dir=None,
     if os.path.exists(CMD_DIR):
         conf.update(load_dir(CMD_DIR))
 
-    # Add commands directory to sys.path if necessary)
+    # Add commands directory to sys.path if necessary
     sys.path.append(os.path.join('/'.join((COMMANDS_DIR.split('/')[:-1]))))
 
     # Initialize clg and return command-line arguments.
     return clg.init(format='raw', data=conf, completion=completion)
 
 def load_clg_customizations():
-    for const in CLG_CONSTS:
+    for const in CLG_CUSTOMISATIONS:
         filepath = os.path.join(LIB_DIR, '%s.py' % const)
         if os.path.exists(filepath):
             mdl = imp.load_source(const, filepath)
@@ -61,15 +83,15 @@ def load_clg_customizations():
             getattr(clg, const.upper()).update(elts)
 
 def load_anchors():
-    ANCHORS.update(yaml.load(open(ANCHORS_FILE), Loader=yamlordereddictloader.Loader)
-                   if os.path.exists(ANCHORS_FILE)
-                   else {})
+    return (yaml.load(open(ANCHORS_FILE), Loader=yamlloader.ordereddict.CLoader)
+            if os.path.exists(ANCHORS_FILE)
+            else {})
 
-def load_file(path):
+def load_file(path, anchors):
     def replace_anchors(conf):
         if isinstance(conf, str):
             try:
-                return (ANCHORS[conf[1:-1].lower()]
+                return (anchors[conf[1:-1].lower()]
                         if all((conf.startswith('_'), not conf.startswith('__'),
                                 conf.endswith('_'), not conf.endswith('__')))
                         else conf)
@@ -89,7 +111,7 @@ def load_file(path):
             return [replace_anchors(elt) for elt in conf]
         else:
             return conf
-    conf = yaml.load(open(path), Loader=yamlordereddictloader.Loader)
+    conf = yaml.load(open(path), Loader=yamlloader.ordereddict.CLoader)
     return replace_anchors(conf or {})
 
 def load_dir(dirpath):
