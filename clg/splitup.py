@@ -191,7 +191,7 @@ def replace_anchors(value, anchors):
             is_anchor = value.startswith('x-')
             return anchors[value] if is_anchor else value
         except KeyError as err:
-            raise CLGSplitupException(f"unknown anchor") from err
+            raise CLGSplitupException(f"unknown anchor: {err}")
 
     if isinstance(value, dict):
         new_value = OrderedDict()
