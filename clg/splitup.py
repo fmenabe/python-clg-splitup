@@ -30,7 +30,7 @@ class CLGSplitupException(Exception):
 def init(cmd_dir=os.path.join(sys.path[0], 'cmd'),
          commands_dir=os.path.join(sys.path[0], 'commands'),
          lib_dir=os.path.join(sys.path[0], 'lib/clg'),
-         completion=True):
+         completion=True, args=None):
     '''
     Initialize the command-line.
 
@@ -49,7 +49,7 @@ def init(cmd_dir=os.path.join(sys.path[0], 'cmd'),
     clg_conf = load_parser(parents=[])
     #import json
     #print(json.dumps(clg_conf, indent=2))
-    return clg.init(format='raw', data=clg_conf, completion=completion)
+    return clg.init(format='raw', data=clg_conf, completion=completion, args=args)
 
 def dirname(parents):
     return os.path.join(CMD_DIR, '/'.join(parents))
