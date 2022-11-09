@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='clg-splitup',
-    version='1.0.0',
+    version='1.1.0',
     author='François Ménabé',
     author_email='francois.menabe@gmail.com',
     url = 'http://github.com/fmenabe/python-clg-splitup',
